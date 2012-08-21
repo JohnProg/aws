@@ -160,6 +160,7 @@ func unmarshal(res *http.Response, v interface{}) error {
 	if err != nil {
 		return err
 	}
+	fmt.Printf("xml: %s\n", string(b))
 	return xml.Unmarshal(b, v)
 }
 
@@ -188,10 +189,18 @@ type Reservation struct {
 }
 
 type Instance struct {
-	InstanceId string
-	StateName  string `xml:"instanceState>name"`
-	DnsName    string
-	IpAddress  string
+	InstanceId     string `xml:"instanceId"`
+	StateName      string `xml:"instanceState>name"`
+	DnsName        string `xml:"dnsName"`
+	PrivateDnsName string `xml:"privateDnsName"`
+	IpAddress      string `xml:"ipAddress"`
+	Tags           []Tag  `xml:"tagSet>item"`
+	LaunchTime     string `xml:"launchTime"`
+}
+
+type Tag struct {
+	Key   string `xml:"key"`
+	Value string `xml:"value"`
 }
 
 func DescribeInstances() (*DescribeInstancesResponse, error) {
